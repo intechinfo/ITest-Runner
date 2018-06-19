@@ -36,7 +36,9 @@ namespace ITest.Runner.Tests
 
         public static string GetCleanResultFilePath( string tesName )
         {
-            var p = Path.Combine( TestsFolderPath, "ITest.Runner.Tests", "Results", tesName + ".xml" );
+            var pResults = Path.Combine( TestsFolderPath, "ITest.Runner.Tests", "Results" );
+            Directory.CreateDirectory( pResults );
+            var p = Path.Combine( pResults, tesName + ".xml" );
             if( File.Exists( p ) ) File.Delete( p );
             return p;
         }

@@ -188,3 +188,4 @@ FakesAssemblies/
 
 /ITestRunner/Output.xml
 /Tests/ITest.Runner.Tests/Results/
+TestResult.*.xml

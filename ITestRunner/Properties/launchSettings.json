@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Runner": {
+      "commandName": "Project",
+      "commandLineArgs": " \"../../../../Tests/Solutions/ITI-PrimarySchool\" \"../../../Output.xml\" "
+    }
+  }
+}

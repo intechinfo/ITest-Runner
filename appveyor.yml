@@ -1,0 +1,18 @@
+version: build{build}
+image: Visual Studio 2017
+clone_folder: C:\INTECH-World\ITest-Projects\ITest-Runner
+
+branches:
+  only:
+    - master
+    - develop
+environment:
+  MYGET_RELEASE_API_KEY:
+    secure: C8epUsJ3vQwFc6deKK6Yvn0jShbl+83IaMAMBrgThxY7w1r4WUgHZst1zDangNSq
+  MYGET_PREVIEW_API_KEY:
+    secure: rGPTRvs+8icX/ODc3Xzk/B1nuQM+M4kZNHa9i6/13CBaPT9VJSB8gdbqBYAgNczw
+  MYGET_CI_API_KEY:
+    secure: WRbe4LswStGzOX8wwXECH+ALMTKONY99mRBwqBA08f+vveRjhPNUy0yV5r1b0ojx
+build_script:
+  - dotnet run --project CodeCakeBuilder -nointeraction
+test: off

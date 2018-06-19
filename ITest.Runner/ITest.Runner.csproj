@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netcoreapp2.1;net461</TargetFrameworks>
+    <LangVersion>7.2</LangVersion>
+  </PropertyGroup>
+
+
+  <!-- This is required to be able to support source injection. -->
+  <ItemGroup>
+    <EmbeddedResource Include="**\*.cs" Exclude="obj\**">
+      <Link>Embedded\%(RecursiveDir)%(Filename)%(Extension)</Link>
+      <Visible>true</Visible>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Update="NUnitBindings.cs" Link="Embedded\NUnitBindings.cs" />
+  </ItemGroup>
+  
+</Project>

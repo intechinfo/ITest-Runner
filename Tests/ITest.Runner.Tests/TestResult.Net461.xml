@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!--This file represents the results of running a test suite-->
+<test-results name="C:\Dev\Ecole\ITest\ITest-Runner\Tests\ITest.Runner.Tests\bin\Debug\net461\ITest.Runner.Tests.dll" total="4" errors="0" failures="0" not-run="0" inconclusive="0" ignored="0" skipped="0" invalid="0" date="2018-06-19" time="16:50:12">
+  <environment nunit-version="2.6.4.14350" clr-version="4.0.30319.42000" os-version="Microsoft Windows NT 6.2.9200.0" platform="Win32NT" cwd="C:\Dev\Ecole\ITest\ITest-Runner" machine-name="DESKTOP-5BQ4M95" user="olivi" user-domain="DESKTOP-5BQ4M95" />
+  <culture-info current-culture="fr-FR" current-uiculture="fr-FR" />
+  <test-suite type="Assembly" name="C:\Dev\Ecole\ITest\ITest-Runner\Tests\ITest.Runner.Tests\bin\Debug\net461\ITest.Runner.Tests.dll" executed="True" result="Success" success="True" time="4.774" asserts="0">
+    <results>
+      <test-suite type="Namespace" name="ITest" executed="True" result="Success" success="True" time="4.764" asserts="0">
+        <results>
+          <test-suite type="Namespace" name="Runner" executed="True" result="Success" success="True" time="4.763" asserts="0">
+            <results>
+              <test-suite type="Namespace" name="Tests" executed="True" result="Success" success="True" time="4.763" asserts="0">
+                <results>
+                  <test-suite type="TestFixture" name="SolutionRunnerTests" executed="True" result="Success" success="True" time="4.497" asserts="0">
+                    <results>
+                      <test-case name="ITest.Runner.Tests.SolutionRunnerTests.ITI_Primary_School_works_fine" executed="True" result="Success" success="True" time="4.487" asserts="0" />
+                    </results>
+                  </test-suite>
+                  <test-suite type="TestFixture" name="TestRootOnLocalTests" executed="True" result="Success" success="True" time="0.258" asserts="0">
+                    <results>
+                      <test-case name="ITest.Runner.Tests.TestRootOnLocalTests.local_Tests_run_BuggySetUp" executed="True" result="Success" success="True" time="0.059" asserts="0" />
+                      <test-case name="ITest.Runner.Tests.TestRootOnLocalTests.local_Tests_run_Fix1" executed="True" result="Success" success="True" time="0.192" asserts="0" />
+                      <test-case name="ITest.Runner.Tests.TestRootOnLocalTests.local_Tests_run_OneBugguyTestAmong4" executed="True" result="Success" success="True" time="0.006" asserts="0" />
+                    </results>
+                  </test-suite>
+                </results>
+              </test-suite>
+            </results>
+          </test-suite>
+        </results>
+      </test-suite>
+    </results>
+  </test-suite>
+</test-results>

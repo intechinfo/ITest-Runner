@@ -72,6 +72,16 @@ namespace ITest
             }
 
             var r = Runner.SolutionRunner.Run( workPath, output, !noCopy, isDebug );
+            if( !r.ProcessSuccess )
+            {
+                Console.WriteLine( "--- RunError" );
+                Console.WriteLine( r.RunError );
+                Console.WriteLine( "--- StdError" );
+                Console.WriteLine( r.StdError );
+                Console.WriteLine( "--- StdOutput" );
+                Console.WriteLine( r.StdOutput );
+            }
+            else Console.Write( "Success" );
             return r.ExitCode;
         }
 

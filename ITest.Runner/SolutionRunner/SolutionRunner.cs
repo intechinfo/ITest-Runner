@@ -128,6 +128,8 @@ namespace ITest.Runner
                         return new ModifyProjectFileResult( $"Unable to find TargetFramework or TargetFrameworks element in first <PropertyGroup> of '{csProjPath}'.", null);
                     }
                 }
+                // Injects StartupObject entry point for our Main.
+                firstPropertyGroup.Add( new XElement( "StartupObject", "ITest.Runner.ConsoleProgram" ) );
                 // Required for code source injection (uses private protected).
                 d.Root.Elements( "PropertyGroup" ).Elements( "LangVersion" ).Remove();
                 firstPropertyGroup.Add( new XElement( "LangVersion", "7.2" ) );

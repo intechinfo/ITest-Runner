@@ -25,6 +25,8 @@ namespace ITest.Runner
 
         public TestMethod Method { get; }
 
+        public bool IsExplicit => Detail.IsExplicit;
+
         public TestCaseDetail Detail { get; }
 
         private protected override int DoExecute( ExecutionContext ctx )

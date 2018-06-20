@@ -30,7 +30,7 @@ namespace ITest.Runner
 
         public bool ShouldRun( TestCaseMethod c )
         {
-            return true;
+            return !c.IsExplicit || !_honorExplicit;
         }
     }
 }

@@ -56,5 +56,19 @@ namespace ITest.Runner.Tests
 
             d.Save( SUTHelper.GetCleanResultFilePath( "Local-OneBugguyTestAmong4" ) );
         }
+
+        [Test]
+        public void TestCase_Explicit_are_handled()
+        {
+            LocalTests.TestCaseWithExplicit.ResetCallMemory();
+
+            XDocument d = TestRoot.UnattendedRun( Assembly.GetExecutingAssembly(), t => t == typeof( LocalTests.TestCaseWithExplicit ) );
+
+            d.Root.Attribute( "ErrorCount" ).Value.Should().Be( "0" );
+            LocalTests.TestCaseWithExplicit.TestCaseAsTestCallCount.Should().Be( 1 );
+            LocalTests.TestCaseWithExplicit.TestCaseWithExplicitMessages.Should().BeEquivalentTo( "Implicit n°1.", "Implicit n°2." );
+
+            d.Save( SUTHelper.GetCleanResultFilePath( "Local-TestCaseWithExplicit" ) );
+        }
     }
 }

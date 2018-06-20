@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netcoreapp2.1</TargetFramework>
+        <OutputType>Exe</OutputType>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="NUnit" Version="3.10.1" />
+        <PackageReference Include="NUnitLite" Version="3.10.1" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\ITI.PrimarySchool-NetCore\ITI.PrimarySchool-NetCore.csproj" />
+    </ItemGroup>
+
+</Project>

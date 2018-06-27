@@ -34,11 +34,17 @@ namespace ITest.Runner.Tests
             return Path.Combine( TestsFolderPath, "Solutions", solutionName );
         }
 
-        public static string GetCleanResultFilePath( string tesName )
+        public static string GetResultFilePath( string testName )
         {
             var pResults = Path.Combine( TestsFolderPath, "ITest.Runner.Tests", "Results" );
             Directory.CreateDirectory( pResults );
-            var p = Path.Combine( pResults, tesName + ".xml" );
+            var p = Path.Combine( pResults, testName + ".xml" );
+            return p;
+        }
+
+        public static string GetCleanResultFilePath( string testName )
+        {
+            var p = GetResultFilePath( testName );
             if( File.Exists( p ) ) File.Delete( p );
             return p;
         }

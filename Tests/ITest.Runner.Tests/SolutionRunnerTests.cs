@@ -1,13 +1,8 @@
 using FluentAssertions;
 using NUnit.Framework;
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml.Linq;
 
 namespace ITest.Runner.Tests
@@ -38,16 +33,24 @@ namespace ITest.Runner.Tests
 
         static void DoRunPrimarySchoolNetCore()
         {
-            var solution = SUTHelper.GetTestSolutionPath( "ITI-PrimarySchool-NetCore" );
-            var output = SUTHelper.GetCleanResultFilePath( "ITI-PrimarySchool-NetCore" );
-            File.Exists( output ).Should().BeFalse();
+            var solutionPath = SUTHelper.GetTestSolutionPath( "ITI-PrimarySchool-NetCore" );
+            var outputPath = SUTHelper.GetCleanResultFilePath( "ITI-PrimarySchool-NetCore" );
+            File.Exists( outputPath ).Should().BeFalse();
 
-            var r = SolutionRunner.Run( solution, output, preserveSolutionFolder: true, debugBuild: true );
+            var r = SolutionRunner.Run( solutionPath, outputPath, preserveSolutionFolder: true, debugBuild: true );
             r.ProcessSuccess.Should().BeTrue();
-            r.OutputXmlPath.Should().Be( output );
+            r.OutputXmlPath.Should().Be( outputPath );
             File.Exists( r.OutputXmlPath ).Should().BeTrue();
             var result = XDocument.Load( r.OutputXmlPath ).Root;
             result.Attribute( "ErrorCount" ).Value.Should().Be( "0" );
+        }
+        [Test]
+        public void Should_Fail_If_Solution_Path_Contain_Temp_Directory()
+        {
+            var solutionPath = SUTHelper.GetTestSolutionPath( "C:/" );
+            var outputPath = SUTHelper.GetCleanResultFilePath( "EmptySolution" );
+            var result = SolutionRunner.Run( solutionPath, outputPath, preserveSolutionFolder: true, debugBuild: true );
+            Assert.That( result.ExitCode != 0 );
         }
 
         [Test]

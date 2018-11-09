@@ -44,6 +44,7 @@ namespace ITest.Runner
                 try
                 {
                     safeWorkPath = Path.Combine( Path.GetTempPath(), "ITestRunner", Guid.NewGuid().ToString( "N" ) );
+                    if( DirIsParent( workSolutionPath, safeWorkPath ) ) return new SolutionRunResult($"Error: Solution Path is a Parent directory of the Temp folder.");
                     CopyDirectory( new DirectoryInfo( workSolutionPath ), new DirectoryInfo( safeWorkPath ),
                                     withHiddenFiles: false,
                                     withHiddenFolders: false,
@@ -92,6 +93,20 @@ namespace ITest.Runner
             {
                 return new SolutionRunResult( $"Error while running: {ex.Message}" );
             }
+        }
+        static bool DirIsParent( string testParent, string testChild )
+        {
+            var parentInfo = new DirectoryInfo( testParent );
+            var childInfo = new DirectoryInfo( testChild );
+            while( childInfo.Parent != null )
+            {
+                if( childInfo.Parent.FullName == parentInfo.FullName )
+                {
+                    return true;
+                }
+                childInfo = childInfo.Parent;
+            }
+            return false;
         }
 
         struct ModifyProjectFileResult

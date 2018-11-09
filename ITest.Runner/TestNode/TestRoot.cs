@@ -38,7 +38,6 @@ namespace ITest.Runner
             throw new NotImplementedException();
         }
 
-
         public static XDocument UnattendedRun( Assembly main, params Assembly[] other )
         {
             return UnattendedRun( () => new TestRoot( main, other ) );

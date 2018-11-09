@@ -19,11 +19,8 @@ namespace ITest.Runner
                 var p = n.Parent;
                 while( p != null )
                 {
-                    if( _nodes.TryGetValue( p, out var explicitValue ) )
-                    {
-                        if( !explicitValue ) _nodes[p] = false;
-                        break;
-                    }
+                    if( _nodes.ContainsKey( p ) ) break;
+                    _nodes[p] = false;
                     p = p.Parent;
                 }
             }

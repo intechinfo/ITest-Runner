@@ -7,6 +7,7 @@ using System.Xml.Linq;
 using System.Diagnostics;
 using System.Text;
 using System.IO.Compression;
+using ITest.Runner;
 
 namespace ITest
 {
@@ -71,7 +72,7 @@ namespace ITest
                 return -1;
             }
 
-            var r = Runner.SolutionRunner.Run( workPath, output, !noCopy, isDebug );
+            SolutionRunResult r = SolutionRunner.Run( workPath, output, !noCopy, isDebug );
             if( !r.ProcessSuccess )
             {
                 Console.WriteLine( "--- RunError" );

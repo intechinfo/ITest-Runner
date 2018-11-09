@@ -85,7 +85,7 @@ namespace ITest.Runner
                 // If a Properties/launchSettings.json file exists, removes it.
                 var launchSettings = Path.Combine( testProjectPath, "Properties", "launchSettings.json" );
                 if( File.Exists( launchSettings ) ) File.Delete( launchSettings );
-                var r = DotNetRun( testProjectPath, debugBuild, project.TargetFramework, outputXmlFilePath );
+                DotNetRunResult r = DotNetRun( testProjectPath, debugBuild, project.TargetFramework, outputXmlFilePath );
                 return new SolutionRunResult( r.ExitCode, r.StdErr, r.StdOut, outputXmlFilePath );
             }
             catch( Exception ex )

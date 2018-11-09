@@ -14,6 +14,9 @@ namespace ITest.Runner
 
         readonly MethodDescriptor _desc;
         readonly IReadOnlyList<TestCaseMethod> _cases;
+
+        // For [Test] method, this is not null: this is the actual test.
+        // This is null for [TestCase].
         readonly ExecutionResult _thisResult;
 
         internal TestMethod( TestFixture f, MethodInfo m, MethodDescriptor d, string inheritedTypeName )

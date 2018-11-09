@@ -6,9 +6,6 @@ namespace ITest.Runner
 {
     class ExecutionContext
     {
-
         public IExecuteStrategy Strategy { get; set; }
-
-
     }
 }

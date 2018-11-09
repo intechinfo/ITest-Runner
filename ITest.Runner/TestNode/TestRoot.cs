@@ -32,6 +32,13 @@ namespace ITest.Runner
 
         public XDocument ResultDocument => _doc;
 
+        public IEnumerable<TestNode> Locate( string filter )
+        {
+            // See NUnit 3 syntax for test selection.
+            throw new NotImplementedException();
+        }
+
+
         public static XDocument UnattendedRun( Assembly main, params Assembly[] other )
         {
             return UnattendedRun( () => new TestRoot( main, other ) );

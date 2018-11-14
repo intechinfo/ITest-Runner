@@ -34,8 +34,8 @@ namespace ITest.Runner
 
         public IEnumerable<TestNode> Locate( string filter )
         {
-            // See NUnit 3 syntax for test selection.
-            throw new NotImplementedException();
+            var selector = new SelectionParser( filter );
+            return TestNodeChildren.Where( n => selector.IsTarget( n ) );
         }
 
         public static XDocument UnattendedRun( Assembly main, params Assembly[] other )

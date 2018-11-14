@@ -67,5 +67,12 @@ namespace ITest.Runner
             }
             return errorCount > 0 ? $"{errorCount} initialization error(s)." : null;
         }
+
+        public override String ToString()
+        {
+            return Parent != null
+                ? Parent.Result.Name.LocalName + "/" + Result.Name.LocalName
+                : Result.Name.LocalName;
+        }
     }
 }

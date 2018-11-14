@@ -123,5 +123,10 @@ namespace ITest.Runner
             }
             return true;
         }
+
+        public override string ToString()
+        {
+            return base.ToString();
+        }
     }
 }

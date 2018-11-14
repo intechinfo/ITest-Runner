@@ -15,6 +15,7 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Remove="ExplicitExecuteStrategy.cs" />
+    <EmbeddedResource Remove="SelectionParser.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Update="NUnitBindings.cs" Link="Embedded\NUnitBindings.cs" />

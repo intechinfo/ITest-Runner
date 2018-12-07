@@ -90,8 +90,8 @@ namespace ITest
         {
             if( error != null )
             {
-                Console.WriteLine( "Error: " + error );
-                Console.WriteLine( new String('-',20) );
+                Console.Error.WriteLine( "Error: " + error );
+                Console.Error.WriteLine( new string( '-',20) );
             }
             Console.WriteLine( "Expected arguments: path-to-a-directory-or-a-zip-file output-file-path [-debug] [-nocopy]" );
             Console.WriteLine();

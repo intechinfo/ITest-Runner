@@ -13,24 +13,24 @@ namespace ITest.Runner
             _honorExplicit = honorExplicit;
         }
 
-        public virtual bool ShouldRun( TestAssembly a )
+        public virtual RunSkipReason ShouldRun( TestAssembly a )
         {
-            return true;
+            return RunSkipReason.None;
         }
 
-        public bool ShouldRun( TestFixture f )
+        public RunSkipReason ShouldRun( TestFixture f )
         {
-            return !f.IsExplicit || !_honorExplicit;
+            return (f.IsExplicit && _honorExplicit) ? RunSkipReason.Explicit : RunSkipReason.None;
         }
 
-        public bool ShouldRun( TestMethod m )
+        public RunSkipReason ShouldRun( TestMethod m )
         {
-            return !m.IsExplicit || !_honorExplicit;
+            return (m.IsExplicit && _honorExplicit) ? RunSkipReason.Explicit : RunSkipReason.None;
         }
 
-        public bool ShouldRun( TestCaseMethod c )
+        public RunSkipReason ShouldRun( TestCaseMethod c )
         {
-            return !c.IsExplicit || !_honorExplicit;
+            return (c.IsExplicit && _honorExplicit) ? RunSkipReason.Explicit : RunSkipReason.None;
         }
     }
 }

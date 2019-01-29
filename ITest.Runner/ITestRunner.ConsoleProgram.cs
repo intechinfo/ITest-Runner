@@ -10,7 +10,7 @@ namespace ITest.Runner
         {
             var outputPath = args[0];
             Console.WriteLine( $"Output path = {outputPath}" );
-            TestRoot.UnattendedRun( Assembly.GetExecutingAssembly() ).Save( outputPath );
+            TestRoot.UnattendedRun( _ => new DefaultExecuteStrategy(true),  Assembly.GetExecutingAssembly() ).Save( outputPath );
         }
 
     }

@@ -31,14 +31,15 @@ namespace ITest.Runner
 
         private protected override int DoExecute( ExecutionContext ctx )
         {
-            if( ctx.Strategy.ShouldRun( this ) )
+            var skip = ctx.Strategy.ShouldRun( this );
+            if( skip == RunSkipReason.None )
             {
                 if( !Method.Fixture.RunSetupMethods( ctx ) ) return 1;
-                bool success = _execResult.Run( (Method.Kind & MethodKind.Async) != 0, Method.Fixture.FixtureObject, Method.Method, Detail.ArrayValues );
+                bool success = _execResult.Run( ctx.ExecutionCount, (Method.Kind & MethodKind.Async) != 0, Method.Fixture.FixtureObject, Method.Method, Detail.ArrayValues );
                 success &= Method.Fixture.RunTearDownMethods( ctx );
                 return success ? 0 : 1;
             }
-            _execResult.Skip();
+            _execResult.Skip( ctx.ExecutionCount, skip );
             return 0;
         }
 

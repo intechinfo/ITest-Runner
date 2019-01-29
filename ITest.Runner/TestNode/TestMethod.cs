@@ -63,14 +63,15 @@ namespace ITest.Runner
         {
             if( _thisResult != null )
             {
-                if( ctx.Strategy.ShouldRun( this ) )
+                var skip = ctx.Strategy.ShouldRun( this );
+                if( skip == RunSkipReason.None )
                 {
                     if( !Fixture.RunSetupMethods( ctx ) ) return 1;
-                    bool success = _thisResult.Run( (Kind & MethodKind.Async) != 0, Fixture.FixtureObject, Method, null );
+                    bool success = _thisResult.Run( ctx.ExecutionCount, (Kind & MethodKind.Async) != 0, Fixture.FixtureObject, Method, null );
                     success &= Fixture.RunTearDownMethods( ctx );
                     return success ? 0 : 1;
                 }
-                _thisResult.Skip();
+                _thisResult.Skip( ctx.ExecutionCount, skip );
                 return 0;
             }
             return base.DoExecute( ctx );

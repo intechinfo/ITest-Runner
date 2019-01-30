@@ -18,8 +18,10 @@
     <Compile Remove="TestNode\RunSkipReason.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Remove="DiscoverExecuteStrategy.cs" />
     <EmbeddedResource Remove="ExecuteStrategy.cs" />
     <EmbeddedResource Remove="ExplicitExecuteStrategy.cs" />
+    <EmbeddedResource Remove="ProjectManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Update="NUnitBindings.cs" Link="Embedded\NUnitBindings.cs" />

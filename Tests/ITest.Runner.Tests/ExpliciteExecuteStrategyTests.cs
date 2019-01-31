@@ -51,18 +51,9 @@ namespace ITest.Runner.Tests
         }
 
         [Test]
-        public void Discover()
-        {
-            var testRoot = new TestRoot( new[] { Assembly.GetExecutingAssembly() }, t => t == typeof( LocalTests.ExpliciteExecute ) );
-            testRoot.Execute( new DiscoverExecuteStrategy() );
-
-            testRoot.ResultDocument.Save( "G:\\Local-ExpliciteExecute" );
-        }
-
-        [Test]
         public void ShouldCallAllNotExplicitTestsOfFixture()
         {
-            var testRoot = new TestRoot( new[] { Assembly.GetExecutingAssembly() }, t => t == typeof( LocalTests.ExpliciteExecute ) );
+            var testRoot = new TestRoot( new[] { Assembly.GetExecutingAssembly() } );
             testRoot.HasInitializationError.Should().BeFalse();
             var strat = new ExplicitExecuteStrategy( testRoot.AllChildrenNodes
                                                         .Where( n => n.ToString() == "ITest.Runner.Tests/ITest.Runner.Tests.LocalTests.ExpliciteExecute" ) );

@@ -93,7 +93,10 @@ namespace ITest.Runner
             string consoleOutput = null;
             try
             {
-                a();
+                using( new ConsoleOutputHook( text => consoleOutput = text ) )
+                {
+                    a();
+                }
             }
             catch( Exception ex )
             {

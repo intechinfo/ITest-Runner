@@ -18,6 +18,7 @@
     <Compile Remove="TestNode\RunSkipReason.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Remove="ConsoleOutputHook.cs" />
     <EmbeddedResource Remove="DiscoverExecuteStrategy.cs" />
     <EmbeddedResource Remove="ExecuteStrategy.cs" />
     <EmbeddedResource Remove="ExplicitExecuteStrategy.cs" />

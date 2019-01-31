@@ -20,13 +20,13 @@ namespace ITest.Runner.Tests.LocalTests
         [Test]
         public void test_01()
         {
-            Console.WriteLine( "Running the first test !" );
             Test01CallCount++;
         }
 
         [Test]
         public void test_02()
         {
+            Console.WriteLine( "Running the second test !" );
             Test02CallCount++;
         }
 

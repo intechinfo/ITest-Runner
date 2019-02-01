@@ -40,7 +40,7 @@ namespace ITest.Runner
 
             public XElement ToXml()
             {
-                var e = new XElement( xRun, new XAttribute( "RunNumber", RunNumber ), new XElement("Console", ConsoleOutput ) );
+                var e = new XElement( xRun, new XAttribute( "RunNumber", RunNumber ), new XElement( "Console", new XAttribute( "Message", string.IsNullOrEmpty( ConsoleOutput ) ? string.Empty : ConsoleOutput ) ) );
                 if( _skipReason != RunSkipReason.None )
                 {
                     e.Add( new XAttribute( "Skip", _skipReason.ToString() ) );

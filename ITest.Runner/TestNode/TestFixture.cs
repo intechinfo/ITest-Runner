@@ -30,7 +30,7 @@ namespace ITest.Runner
         object _fixtureObject;
 
         internal TestFixture( TestAssembly a, Type t, FixtureDescriptor desc )
-            : base( a, xElementName, t.FullName )
+            : base( a, xElementName, t.FullName, desc.IsExplicit )
         {
             Assembly = a;
             _fixtureType = t;
@@ -44,7 +44,10 @@ namespace ITest.Runner
             _tearDownMethods = new List<MethodDescriptor>();
             do
             {
-                foreach( var m in t.GetMethods( BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public ) )
+                foreach( var m in t.GetMethods( BindingFlags.DeclaredOnly
+                                                | BindingFlags.Instance
+                                                | BindingFlags.Static
+                                                | BindingFlags.Public ) )
                 {
                     var d = NUnitBindings.GetMethodDescriptor( m );
                     if( d == null ) continue;
@@ -125,9 +128,5 @@ namespace ITest.Runner
             return true;
         }
 
-        public override string ToString()
-        {
-            return base.ToString();
-        }
     }
 }

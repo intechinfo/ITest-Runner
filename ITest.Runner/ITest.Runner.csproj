@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFrameworks>netcoreapp2.1;net461</TargetFrameworks>
@@ -14,18 +14,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Compile Remove="ExecuteStrategy.cs" />
-    <Compile Remove="TestNode\RunSkipReason.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Remove="ConsoleOutputHook.cs" />
-    <EmbeddedResource Remove="DiscoverExecuteStrategy.cs" />
-    <EmbeddedResource Remove="ExecuteStrategy.cs" />
-    <EmbeddedResource Remove="ExplicitExecuteStrategy.cs" />
-    <EmbeddedResource Remove="ProjectManager.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Update="NUnitBindings.cs" Link="Embedded\NUnitBindings.cs" />
+    <EmbeddedResource Update="ExecutionStrategy\SkipAllExecuteStrategy.cs" Link="Embedded\ExecutionStrategy\SkipAllExecuteStrategy.cs" />
   </ItemGroup>
   
 </Project>

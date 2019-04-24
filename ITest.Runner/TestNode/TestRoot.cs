@@ -7,6 +7,9 @@ using System.Xml.Linq;
 
 namespace ITest.Runner
 {
+    /// <summary>
+    /// This is the root of the test architecture. It contains one or more <see cref="TestAssembly"/> nodes.
+    /// </summary>
     public class TestRoot : TestNode
     {
         public static readonly XName xElementName = XNamespace.None + "TestResult";
@@ -28,15 +31,18 @@ namespace ITest.Runner
             Initialize();
         }
 
+
+        /// <summary>
+        /// Always null: this is the root node.
+        /// </summary>
         public override TestNode Parent => null;
 
         private protected override IReadOnlyList<TestNode> TestNodeChildren => _assemblies;
 
-
         /// <summary>
         /// Root entry point of execution.
         /// </summary>
-        /// <param name="strategy">The strategy to use. Can npt be null.</param>
+        /// <param name="strategy">The strategy to use. Can not be null.</param>
         /// <returns>The number of errors.</returns>
         public int Execute( IExecuteStrategy strategy )
         {
@@ -50,6 +56,9 @@ namespace ITest.Runner
             return base.DoExecute( ctx );
         }
 
+        /// <summary>
+        /// Gets the updated document result.
+        /// </summary>
         public XDocument ResultDocument => _doc;
 
 

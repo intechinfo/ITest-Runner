@@ -5,7 +5,7 @@ using System;
 namespace ITest.Runner.Tests.LocalTests
 {
     [TestFixture]
-    public class ExpliciteExecute
+    public class ExplicitExecute
     {
         public static int Test01CallCount { get; private set; }
         public static int Test02CallCount { get; private set; }

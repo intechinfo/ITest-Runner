@@ -4,9 +4,9 @@ using System.Text;
 
 namespace ITest.Runner
 {
-    public class DiscoverExecuteStrategy : IExecuteStrategy
+    public class SkipAllExecuteStrategy : IExecuteStrategy
     {
-        public DiscoverExecuteStrategy()
+        public SkipAllExecuteStrategy()
         {
         }
 

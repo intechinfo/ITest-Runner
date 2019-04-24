@@ -12,7 +12,7 @@ namespace ITest.Runner.Tests
     public class ConsoleOutputHookTests
     {
         [Test]
-        public void CorrectlyCaptureOuputInScope()
+        public void ConsoleOutputHook_works_and_can_be_scoped()
         {
             Console.WriteLine( "Ya" );
             string conText = null;
@@ -30,6 +30,6 @@ namespace ITest.Runner.Tests
 
             conText.Should().Contain( "Yo1" ).And.Contain( "Yo2" )
                             .And.NotContain( "Ya" ).And.NotContain( "Yu" ).And.NotContain( "NEVER" );
-    }
+        }
     }
 }

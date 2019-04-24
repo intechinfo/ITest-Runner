@@ -44,7 +44,6 @@ namespace ITest.Runner
                 try
                 {
                     safeWorkPath = Path.Combine( Path.GetTempPath(), "ITestRunner", Guid.NewGuid().ToString( "N" ) );
-                    if( DirIsParent( workSolutionPath, safeWorkPath ) ) return new SolutionRunResult($"Error: Solution Path is a Parent directory of the Temp folder.");
                     CopyDirectory( new DirectoryInfo( workSolutionPath ), new DirectoryInfo( safeWorkPath ),
                                     withHiddenFiles: false,
                                     withHiddenFolders: false,
@@ -94,20 +93,6 @@ namespace ITest.Runner
                 return new SolutionRunResult( $"Error while running: {ex.Message}" );
             }
         }
-        static bool DirIsParent( string testParent, string testChild )
-        {
-            var parentInfo = new DirectoryInfo( testParent );
-            var childInfo = new DirectoryInfo( testChild );
-            while( childInfo.Parent != null )
-            {
-                if( childInfo.Parent.FullName == parentInfo.FullName )
-                {
-                    return true;
-                }
-                childInfo = childInfo.Parent;
-            }
-            return false;
-        }
 
         struct ModifyProjectFileResult
         {
@@ -145,9 +130,33 @@ namespace ITest.Runner
                 }
                 // Injects StartupObject entry point for our Main.
                 firstPropertyGroup.Add( new XElement( "StartupObject", "ITest.Runner.ConsoleProgram" ) );
-                // Required for code source injection (uses private protected).
-                d.Root.Elements( "PropertyGroup" ).Elements( "LangVersion" ).Remove();
-                firstPropertyGroup.Add( new XElement( "LangVersion", "7.2" ) );
+                // "LangVersion" >= 7.2 is required for code source injection (uses private protected).
+                var minLangVersion = new Version( 7, 2 );
+                var vE = d.Root.Elements( "PropertyGroup" ).Elements( "LangVersion" ).LastOrDefault();
+                if( vE == null ) firstPropertyGroup.Add( new XElement( "LangVersion", minLangVersion.ToString() ) );
+                else
+                {
+                    bool mustSetMinVersion = false;
+                    var vText = vE.Value;
+                    if( vText != "preview"
+                        && vText != "latest"
+                        && vText != "latestMajor" )
+                    {
+                        if( vText == "ISO-2" || vText == "ISO-1" )
+                        {
+                            mustSetMinVersion = true;
+                        }
+                        else if( Version.TryParse( vText, out Version v ) )
+                        {
+                            mustSetMinVersion = v < minLangVersion;
+                        }
+                        else
+                        {
+                            return new ModifyProjectFileResult( $"Unable to parse LangVersion element in '{csProjPath}': '{vText}' is not a version).", null );
+                        }
+                    }
+                    if( mustSetMinVersion ) vE.SetValue( minLangVersion.ToString() );
+                }
                 d.Save( csProjPath );
                 return new ModifyProjectFileResult( null, targetFramework);
             }

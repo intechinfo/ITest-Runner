@@ -12,7 +12,7 @@ namespace ITest.Runner
         readonly ExecutionResult _execResult;
 
         internal TestCaseMethod( TestMethod m, TestCaseDetail d )
-            : base( m, xElementName, d.CaseSignature )
+            : base( m, xElementName, d.CaseSignature, d.IsExplicit )
         {
             Method = m;
             Detail = d;

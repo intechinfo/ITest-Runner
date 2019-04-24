@@ -30,7 +30,7 @@ namespace ITest.Runner
         object _fixtureObject;
 
         internal TestFixture( TestAssembly a, Type t, FixtureDescriptor desc )
-            : base( a, xElementName, t.FullName )
+            : base( a, xElementName, t.FullName, desc.IsExplicit )
         {
             Assembly = a;
             _fixtureType = t;
@@ -44,7 +44,10 @@ namespace ITest.Runner
             _tearDownMethods = new List<MethodDescriptor>();
             do
             {
-                foreach( var m in t.GetMethods( BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public ) )
+                foreach( var m in t.GetMethods( BindingFlags.DeclaredOnly
+                                                | BindingFlags.Instance
+                                                | BindingFlags.Static
+                                                | BindingFlags.Public ) )
                 {
                     var d = NUnitBindings.GetMethodDescriptor( m );
                     if( d == null ) continue;
@@ -80,14 +83,15 @@ namespace ITest.Runner
 
         private protected override int DoExecute( ExecutionContext ctx )
         {
-            if( !ctx.Strategy.ShouldRun( this ) )
+            var skip = ctx.Strategy.ShouldRun( this );
+            if( skip != RunSkipReason.None )
             {
-                _instanciationResult.Skip();
+                _instanciationResult.Skip( ctx.ExecutionCount, skip );
                 return 0;
             }
             if( _fixtureObject == null )
             {
-                if( !_instanciationResult.Run( () => _fixtureObject = Activator.CreateInstance( _fixtureType ) ) )
+                if( !_instanciationResult.Run( ctx.ExecutionCount, () => _fixtureObject = Activator.CreateInstance( _fixtureType ) ) )
                 {
                     return 1;
                 }
@@ -104,7 +108,7 @@ namespace ITest.Runner
         {
             foreach( var d in _setupMethods )
             {
-                if( !_setupExecResult.Run( (d.MethodKind & MethodKind.Async) != 0, _fixtureObject, d.Method, null ) )
+                if( !_setupExecResult.Run( ctx.ExecutionCount, (d.MethodKind & MethodKind.Async) != 0, _fixtureObject, d.Method, null ) )
                 {
                     return false;
                 }
@@ -116,12 +120,13 @@ namespace ITest.Runner
         {
             foreach( var d in _tearDownMethods )
             {
-                if( !_tearDownExecResult.Run( (d.MethodKind & MethodKind.Async) != 0, _fixtureObject, d.Method, null ) )
+                if( !_tearDownExecResult.Run( ctx.ExecutionCount, (d.MethodKind & MethodKind.Async) != 0, _fixtureObject, d.Method, null ) )
                 {
                     return false;
                 }
             }
             return true;
         }
+
     }
 }

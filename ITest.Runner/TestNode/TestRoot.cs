@@ -7,12 +7,16 @@ using System.Xml.Linq;
 
 namespace ITest.Runner
 {
+    /// <summary>
+    /// This is the root of the test architecture. It contains one or more <see cref="TestAssembly"/> nodes.
+    /// </summary>
     public class TestRoot : TestNode
     {
         public static readonly XName xElementName = XNamespace.None + "TestResult";
 
         readonly XDocument _doc;
         readonly IReadOnlyList<TestAssembly> _assemblies;
+        int _executionCount;
 
         public TestRoot( Assembly main, params Assembly[] other )
             : this( new[] { main }.Concat( other ) )
@@ -24,36 +28,64 @@ namespace ITest.Runner
         {
             _doc = new XDocument( Result );
             _assemblies = assemblies.Select( a => new TestAssembly( this, a, typeFilter ) ).ToList();
+            Initialize();
         }
 
+
+        /// <summary>
+        /// Always null: this is the root node.
+        /// </summary>
         public override TestNode Parent => null;
 
         private protected override IReadOnlyList<TestNode> TestNodeChildren => _assemblies;
 
+        /// <summary>
+        /// Root entry point of execution.
+        /// </summary>
+        /// <param name="strategy">The strategy to use. Can not be null.</param>
+        /// <returns>The number of errors.</returns>
+        public int Execute( IExecuteStrategy strategy )
+        {
+            if( strategy == null ) throw new ArgumentNullException( nameof( strategy ) );
+            return Execute( new ExecutionContext { Strategy = strategy } );
+        }
+
+        private protected override int DoExecute( ExecutionContext ctx )
+        {
+            ctx.ExecutionCount = ++_executionCount;
+            return base.DoExecute( ctx );
+        }
+
+        /// <summary>
+        /// Gets the updated document result.
+        /// </summary>
         public XDocument ResultDocument => _doc;
 
-        public IEnumerable<TestNode> Locate( string filter )
+
+        public static XDocument UnattendedRun( Func<TestRoot, IExecuteStrategy> strategyBuilder, Assembly main, params Assembly[] other )
         {
-            // See NUnit 3 syntax for test selection.
-            throw new NotImplementedException();
+            return UnattendedRun( () => new TestRoot( main, other ), strategyBuilder );
         }
 
-        public static XDocument UnattendedRun( Assembly main, params Assembly[] other )
+        public static XDocument UnattendedRun( Assembly a, Func<Type, bool> typeFilter, Func<TestRoot, IExecuteStrategy> strategyBuilder = null )
         {
-            return UnattendedRun( () => new TestRoot( main, other ) );
-        }
-        public static XDocument UnattendedRun( Assembly a, Func<Type, bool> typeFilter )
-        {
-            return UnattendedRun( () => new TestRoot( new[] { a }, typeFilter ) );
+            return UnattendedRun( () => new TestRoot( new[] { a }, typeFilter ), strategyBuilder );
         }
 
-        static XDocument UnattendedRun( Func<TestRoot> creator )
+        static XDocument UnattendedRun( Func<TestRoot> creator, Func<TestRoot,IExecuteStrategy> strategyBuilder )
         {
             try
             {
                 var r = creator();
-                var ctx = new ExecutionContext() { Strategy = new DefaultExecuteStrategy( honorExplicit: true ) };
-                if( r.Initialize() == null ) r.Execute( ctx );
+                if( !r.HasInitializationError )
+                {
+                    if( strategyBuilder == null ) strategyBuilder = root => new DefaultExecuteStrategy( true );
+                    var strat = strategyBuilder( r );
+                    if( strat != null )
+                    {
+                        r.Execute( strat );
+                    }
+                }
                 return r.ResultDocument;
             }
             catch( Exception ex )
@@ -61,6 +93,5 @@ namespace ITest.Runner
                 return new XDocument( new XElement( "Fatal", ex.ToXml() ) );
             }
         }
-
     }
 }

@@ -1,6 +1,7 @@
 using ITest.Framework;
+using FluentAssertions;
 using System;
-
+using System.IO;
 
 namespace ITest.Runner.Tests.LocalTests
 {

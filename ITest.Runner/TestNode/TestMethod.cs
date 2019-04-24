@@ -20,12 +20,15 @@ namespace ITest.Runner
         readonly ExecutionResult _thisResult;
 
         internal TestMethod( TestFixture f, MethodInfo m, MethodDescriptor d, string inheritedTypeName )
-            : base( f, xElementName, inheritedTypeName != null ? inheritedTypeName + '.' + m.Name : m.Name )
+            : base( f,
+                    xElementName,
+                    inheritedTypeName != null ? inheritedTypeName + '.' + m.Name : m.Name,
+                    (d.MethodKind & MethodKind.Explicit) != 0 )
         {
             Fixture = f;
             Method = m;
             _desc = d;
-            Result.Add( new XAttribute( "Kind", _desc.MethodKind ) );
+            Result.Add( new XAttribute( "Kind", _desc.MethodKind & ~MethodKind.Explicit ) );
             _cases = d.TestCaseDetails.Select( c => new TestCaseMethod( this, c ) ).ToList();
             Debug.Assert( ((_desc.MethodKind & MethodKind.TestCase) != 0) == _cases.Count > 0 );
             if( (_desc.MethodKind & MethodKind.TestCase) == 0 ) _thisResult = new ExecutionResult( Result );
@@ -63,14 +66,15 @@ namespace ITest.Runner
         {
             if( _thisResult != null )
             {
-                if( ctx.Strategy.ShouldRun( this ) )
+                var skip = ctx.Strategy.ShouldRun( this );
+                if( skip == RunSkipReason.None )
                 {
                     if( !Fixture.RunSetupMethods( ctx ) ) return 1;
-                    bool success = _thisResult.Run( (Kind & MethodKind.Async) != 0, Fixture.FixtureObject, Method, null );
+                    bool success = _thisResult.Run( ctx.ExecutionCount, (Kind & MethodKind.Async) != 0, Fixture.FixtureObject, Method, null );
                     success &= Fixture.RunTearDownMethods( ctx );
                     return success ? 0 : 1;
                 }
-                _thisResult.Skip();
+                _thisResult.Skip( ctx.ExecutionCount, skip );
                 return 0;
             }
             return base.DoExecute( ctx );

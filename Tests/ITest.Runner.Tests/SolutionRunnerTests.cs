@@ -22,7 +22,7 @@ namespace ITest.Runner.Tests
             r.OutputXmlPath.Should().Be( output );
             File.Exists( r.OutputXmlPath ).Should().BeTrue();
             var result = XDocument.Load( r.OutputXmlPath ).Root;
-            result.Attribute( "ErrorCount" ).Value.Should().Be( "0" );
+            result.Attribute( "LastRunErrorCount" ).Value.Should().Be( "0" );
         }
 
         [Test]
@@ -42,8 +42,9 @@ namespace ITest.Runner.Tests
             r.OutputXmlPath.Should().Be( outputPath );
             File.Exists( r.OutputXmlPath ).Should().BeTrue();
             var result = XDocument.Load( r.OutputXmlPath ).Root;
-            result.Attribute( "ErrorCount" ).Value.Should().Be( "0" );
+            result.Attribute( "LastRunErrorCount" ).Value.Should().Be( "0" );
         }
+
         [Test]
         public void Should_Fail_If_Solution_Path_Contain_Temp_Directory()
         {
@@ -97,12 +98,13 @@ namespace ITest.Runner.Tests
 
             bool GetSuccess( XElement e )
             {
-                return ((int?)e.Attribute( "RunCount" ) ?? 1) > 0 && (int)e.Attribute( "ErrorCount" ) == 0;
+                return (int)e.Attribute( "LastRunErrorCount" ) == 0;
             }
 
             var pointResult = new XElement( "PointResult",
                                     result.Descendants()
-                                          .Where( e => e.Name == "F" || e.Name == "M" || e.Name == "C" )
+                                          .Where( e => (e.Name == "F" || e.Name == "M" || e.Name == "C")
+                                                        && e.Attribute( "IsExplicit" ) == null )
                                           .Select( e => new XElement( "P",
                                                                 new XAttribute( "FullName", GetFullName( e ) ),
                                                                 new XAttribute( "Type", e.Name ),

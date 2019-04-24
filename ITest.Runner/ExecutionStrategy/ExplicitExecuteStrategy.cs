@@ -26,37 +26,42 @@ namespace ITest.Runner
             }
         }
 
-        public virtual bool ShouldRun( TestAssembly a )
+        public virtual RunSkipReason ShouldRun( TestAssembly a )
         {
-            return _nodes.ContainsKey( a );
+            return _nodes.ContainsKey( a ) ? RunSkipReason.None : RunSkipReason.Untargeted;
         }
 
-        public bool ShouldRun( TestFixture f )
+        public RunSkipReason ShouldRun( TestFixture f )
         {
-            return _nodes.ContainsKey( f );
+            if( _nodes.ContainsKey( f ) ) return RunSkipReason.None;
+            if( (_nodes.TryGetValue( f.Assembly, out bool a ) && a) )
+            {
+                return f.IsExplicit ? RunSkipReason.Explicit : RunSkipReason.None;
+            }
+            return RunSkipReason.Untargeted;
         }
-
-        public bool ShouldRun( TestMethod m )
+         
+        public RunSkipReason ShouldRun( TestMethod m )
         {
-            if( _nodes.ContainsKey( m ) ) return true;
+            if( _nodes.ContainsKey( m ) ) return RunSkipReason.None;
             if( (_nodes.TryGetValue( m.Fixture, out bool f ) && f)
                 || (_nodes.TryGetValue( m.Fixture.Assembly, out bool a) && a) )
             {
-                return !m.IsExplicit;
+                return m.IsExplicit ? RunSkipReason.Explicit : RunSkipReason.None;
             }
-            return false;
+            return RunSkipReason.Untargeted;
         }
 
-        public bool ShouldRun( TestCaseMethod c )
+        public RunSkipReason ShouldRun( TestCaseMethod c )
         {
-            if( _nodes.ContainsKey( c ) ) return true;
+            if( _nodes.ContainsKey( c ) ) return RunSkipReason.None;
             if( (_nodes.TryGetValue( c.Method, out bool m ) && m)
                 || (_nodes.TryGetValue( c.Method.Fixture, out bool f) && f)
                 || (_nodes.TryGetValue( c.Method.Fixture.Assembly, out bool a) && a) )
             {
-                return !c.IsExplicit;
+                return c.IsExplicit ? RunSkipReason.Explicit : RunSkipReason.None;
             }
-            return false;
+            return RunSkipReason.Untargeted;
         }
     }
 }

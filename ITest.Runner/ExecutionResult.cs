@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,28 +12,49 @@ namespace ITest.Runner
     {
         public static readonly XName xRunCount = XNamespace.None + "RunCount";
         public static readonly XName xLastError = XNamespace.None + "LastError";
+        public static readonly XName xRuns = XNamespace.None + "Runs";
+        public static readonly XName xRun = XNamespace.None + "Run";
 
         public struct OneRun
         {
-            public readonly bool Skip;
+            public readonly RunSkipReason _skipReason;
             public readonly Exception Exception;
+            public readonly string ConsoleOutput;
+            public readonly int RunNumber; 
 
-            internal OneRun( bool skip )
+            internal OneRun( int runNumber, RunSkipReason skip )
             {
-                Skip = skip;
+                _skipReason = skip;
                 Exception = null;
+                ConsoleOutput = null;
+                RunNumber = runNumber;
             }
 
-            internal OneRun( Exception ex )
+            internal OneRun( int runNumber, string consoleOuput, Exception ex )
             {
-                Skip = false;
+                _skipReason = RunSkipReason.None;
+                ConsoleOutput = consoleOuput;
                 Exception = ex;
+                RunNumber = runNumber;
+            }
+
+            public XElement ToXml()
+            {
+                var e = new XElement( xRun, new XAttribute( "RunNumber", RunNumber ), new XElement( "Console", new XAttribute( "Message", string.IsNullOrEmpty( ConsoleOutput ) ? string.Empty : ConsoleOutput ) ) );
+                if( _skipReason != RunSkipReason.None )
+                {
+                    e.Add( new XAttribute( "Skip", _skipReason.ToString() ) );
+                }
+                else if( Exception != null )
+                {
+                    e.Add( Exception.ToXml() );
+                }
+                return e;
             }
         }
 
         readonly List<OneRun> _runs;
-        readonly XAttribute _runCount;
-        readonly XElement _lastError;
+        readonly XElement _xmlRuns;
 
         internal ExecutionResult( TestNode holder, XName subElementName )
             : this( CreateSubElement( holder, subElementName ) )
@@ -43,59 +65,53 @@ namespace ITest.Runner
         {
             var e = new XElement( subElementName );
             holder.Result.Add( e );
-            return e; ;
+            return e;
         }
 
         internal ExecutionResult( XElement parent )
         {
             _runs = new List<OneRun>();
-            _runCount = new XAttribute( xRunCount, 0 );
-            _lastError = new XElement( xLastError );
-            parent.Add( _runCount, _lastError );
+            _xmlRuns = new XElement( xRuns );
+            parent.Add( _xmlRuns );
         }
-
-        public int ExecutionCount => _runs.Count;
-
-        public bool Success => LastError == null;
-
-        public Exception LastError { get; private set; }
 
         public IReadOnlyList<OneRun> Runs => _runs;
 
         void AddRun( OneRun r )
         {
             _runs.Add( r );
-            _runCount.SetValue( _runs.Count );
+            _xmlRuns.Add( r.ToXml() );
         }
 
-        internal void Skip()
+        internal void Skip( int runNumber, RunSkipReason reason )
         {
-            AddRun( new OneRun( true ) );
+            AddRun( new OneRun( runNumber, reason ) );
         }
 
-        internal bool Run( Action a )
+        internal bool Run( int runNumber, Action a )
         {
+            string consoleOutput = null;
             try
             {
-                a();
+                using( new ConsoleOutputHook( text => consoleOutput = text ) )
+                {
+                    a();
+                }
             }
             catch( Exception ex )
             {
                 if( ex is TargetInvocationException tI ) ex = tI.InnerException;
-                LastError = ex;
-                AddRun( new OneRun( ex ) );
-                _lastError.RemoveAll();
-                _lastError.Add( ex.ToXml() );
+                AddRun( new OneRun( runNumber, consoleOutput, ex ) );
                 return false;
             }
-            AddRun( new OneRun( false ) );
+            AddRun( new OneRun( runNumber, consoleOutput, null ) );
             return true;
         }
 
-        internal bool Run( bool isAsync, object o, MethodInfo m, object[] parameters )
+        internal bool Run( int runNumber, bool isAsync, object o, MethodInfo m, object[] parameters )
         {
-            if( !isAsync ) return Run( () => m.Invoke( o, parameters ) );
-            return Run( () => ((Task)m.Invoke( o, parameters )).GetAwaiter().GetResult() );
+            if( !isAsync ) return Run( runNumber, () => m.Invoke( o, parameters ) );
+            return Run( runNumber, () => ((Task)m.Invoke( o, parameters )).GetAwaiter().GetResult() );
         }
 
 

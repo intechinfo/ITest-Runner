@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFrameworks>netcoreapp2.1;net461</TargetFrameworks>
@@ -14,10 +14,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Remove="ExplicitExecuteStrategy.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Update="NUnitBindings.cs" Link="Embedded\NUnitBindings.cs" />
+    <EmbeddedResource Update="ExecutionStrategy\SkipAllExecuteStrategy.cs" Link="Embedded\ExecutionStrategy\SkipAllExecuteStrategy.cs" />
   </ItemGroup>
   
 </Project>
